@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "md2pdf",
+	"name": "Markdown to PDF",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "To convert Markdown files to PDF files.",
+	"author": "IyasuH",
+	"authorUrl": "https://github.com/IyasuH",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
