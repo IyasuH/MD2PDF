@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	pdf "github.com/adrg/go-wkhtmltopdf"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 )
@@ -37,6 +38,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	// clean up the generated HTML file
+	// os.Remove(fmt.Sprintf("%s.html", filepath.Base(fileName))
 }
 
 func run(fileName string) error {
@@ -47,7 +50,11 @@ func run(fileName string) error {
 	htmlData := parseContent(input)
 	outName := fmt.Sprintf("%s.html", filepath.Base(fileName))
 	fmt.Printf("[INFO] Writing HTML to %s \n", outName)
-	return saveHTML(outName, htmlData)
+	err = saveHTML(outName, htmlData)
+	if err != nil {
+		return err
+	}
+	return savePDF(outName)
 }
 
 func parseContent(input []byte) []byte {
@@ -65,4 +72,37 @@ func parseContent(input []byte) []byte {
 
 func saveHTML(fileName string, data []byte) error {
 	return os.WriteFile(fileName, data, 0644)
+}
+
+func savePDF(fileName string) error {
+	if err := pdf.Init(); err != nil {
+		return err
+	}
+	defer pdf.Destroy()
+	object, err := pdf.NewObject(fileName)
+	if err != nil {
+		return err
+	}
+
+	converter, err := pdf.NewConverter()
+	if err != nil {
+		return err
+	}
+	defer converter.Destroy()
+
+	converter.Add(object)
+
+	converter.Title = fileName
+	converter.MarginTop = "1cm"
+	converter.MarginBottom = "1cm"
+	converter.PaperSize = pdf.A4
+
+	outFile, err := os.Create("output.pdf")
+	defer outFile.Close()
+
+	if err := converter.Run(outFile); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,4 +1,6 @@
-import { Plugin } from 'obsidian';
+import { Plugin, 
+	// FileSystemAdapter 
+} from 'obsidian';
 // import * as path from 'path';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
@@ -8,6 +10,10 @@ export default class MDToPDF extends Plugin {
 	const execFileAsync = promisify(execFile);
 	console.log('loading MDToPDF plugin');
 	this.addRibbonIcon('dice', 'MD to PDF', async () => {
+
+		// const fileSysAdpaterObj = new FileSystemAdapter()
+		// console.log(fileSysAdpaterObj.getFullPath());	
+
 		console.log('MD to PDF clicked');
 		const file = this.app.workspace.getActiveFile();
 		if (file) {
@@ -26,7 +32,7 @@ export default class MDToPDF extends Plugin {
 				if (stderr) {
 					console.error('Error:', stderr);
 				} else {
-					console.log('Output:', stdout);
+					console.log('MD2PDF:', stdout);
 				}
 				console.log('PDF generated');
 			} catch (error) {
