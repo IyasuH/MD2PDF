@@ -7,7 +7,7 @@ import * as path from 'path';
 export default class MDToPDF extends Plugin {
   async onload() {
 	const execFileAsync = promisify(execFile);
-	const plugin_path = ".obsidian/plugins/obsidian-md2pdf-plugin";
+	const plugin_path = ".obsidian/plugins/MD2PDF";
 	console.log('loading MDToPDF plugin');
 	this.addRibbonIcon('dice', 'MD to PDF', async () => {
 		console.log('MD to PDF clicked');
