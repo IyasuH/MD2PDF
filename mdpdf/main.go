@@ -38,8 +38,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	// clean up the generated HTML file
-	// os.Remove(fmt.Sprintf("%s.html", filepath.Base(fileName))
+	cleanUp(fileName)
 }
 
 func run(fileName string) error {
@@ -48,13 +47,13 @@ func run(fileName string) error {
 		return err
 	}
 	htmlData := parseContent(input)
-	outName := fmt.Sprintf("%s.html", filepath.Base(fileName))
-	fmt.Printf("[INFO] Writing HTML to %s \n", outName)
-	err = saveHTML(outName, htmlData)
+	htmlName := fmt.Sprintf("%s.html", filepath.Base(fileName))
+	fmt.Printf("[INFO] Writing HTML to %s \n", htmlName)
+	err = saveHTML(htmlName, htmlData)
 	if err != nil {
 		return err
 	}
-	return savePDF(outName)
+	return savePDF(htmlName)
 }
 
 func parseContent(input []byte) []byte {
@@ -75,6 +74,7 @@ func saveHTML(fileName string, data []byte) error {
 }
 
 func savePDF(fileName string) error {
+	pdfName := fmt.Sprintf("%s.pdf", filepath.Base(fileName))
 	if err := pdf.Init(); err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func savePDF(fileName string) error {
 	converter.MarginBottom = "1cm"
 	converter.PaperSize = pdf.A4
 
-	outFile, err := os.Create("output.pdf")
+	outFile, err := os.Create(pdfName)
 	defer outFile.Close()
 
 	if err := converter.Run(outFile); err != nil {
@@ -105,4 +105,13 @@ func savePDF(fileName string) error {
 	}
 
 	return nil
+}
+
+func cleanUp(fileName string) {
+	fmt.Print("[INFO] Cleaning up files. \n")
+	// os.Remove(fileName)
+	// os.Remove(filepath.Base(fileName + ".html"))
+	os.Remove(filepath.Base(fileName))
+	html_file := fmt.Sprintf("%s.html", filepath.Base(fileName))
+	os.Remove(html_file)
 }
